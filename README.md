@@ -5,7 +5,7 @@ Yo!
 
 So, this is a collection of my external modules for use to assist with game development using game engines.
 
-Feel free to contact me on [https://twitter.com/solarlune Twitter], by e-mail at (solarlune(at)gmail.com), or on the individual forums for the engines that this collection will serve. Currently serving:
+Feel free to contact me on [Twitter](https://twitter.com/solarlune), by e-mail at (solarlune(at)gmail.com), or on the individual forums / communication sites for the engines that this collection will serve. Currently serving:
 
  * The [Blender Game Engine](http://blender.org) (the BGE folder)
  * [BDX](https://github.com/goranm/bdx) (the BDX folder)
