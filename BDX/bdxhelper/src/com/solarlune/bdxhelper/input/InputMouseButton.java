@@ -1,6 +1,5 @@
 package com.solarlune.bdxhelper.input;
 
-import com.badlogic.gdx.Gdx;
 import com.nilunder.bdx.Bdx;
 
 /**

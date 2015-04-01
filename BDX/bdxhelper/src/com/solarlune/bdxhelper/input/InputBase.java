@@ -1,8 +1,6 @@
 package com.solarlune.bdxhelper.input;
 
 import com.badlogic.gdx.controllers.Controller;
-import com.badlogic.gdx.controllers.PovDirection;
-
 import static com.badlogic.gdx.controllers.Controllers.getControllers;
 
 /**

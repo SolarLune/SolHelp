@@ -2,7 +2,6 @@ package com.solarlune.bdxhelper.input;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by SolarLune on 1/7/2015.

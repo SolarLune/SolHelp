@@ -1,7 +1,5 @@
 package com.solarlune.bdxhelper.input;
 
-import com.badlogic.gdx.controllers.PovDirection;
-
 /**
  * Created by SolarLune on 1/9/2015.
  */

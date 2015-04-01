@@ -1,6 +1,5 @@
 package com.solarlune.bdxhelper.navigation;
 
-import com.nilunder.bdx.Bdx;
 import com.nilunder.bdx.GameObject;
 import com.nilunder.bdx.RayHit;
 import com.nilunder.bdx.Scene;
