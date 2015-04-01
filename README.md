@@ -12,7 +12,7 @@ Feel free to contact me on [Twitter](https://twitter.com/solarlune), by e-mail a
 
 [(AFAIK) The Largest Blender Game Engine Forum](http://blenderartists.org/forum/forumdisplay.php?12-Game-Engine-Support-and-Discussion)
 
-[BDX Sub-reddit for discussion and support](http://www.reddit.com/r/bdx BDX subreddit)
+[BDX Sub-reddit for discussion and support](http://www.reddit.com/r/bdx)
 
 You can copy and paste the text from the source files, but it's a lot simpler to just pull the code using Git with a client like [TortoiseGit](https://code.google.com/p/tortoisegit/).
 
