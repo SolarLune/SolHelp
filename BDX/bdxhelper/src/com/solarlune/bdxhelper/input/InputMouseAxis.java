@@ -1,8 +1,5 @@
 package com.solarlune.bdxhelper.input;
 
-import com.nilunder.bdx.Bdx;
-
-import javax.vecmath.Vector4f;
 
 /**
  * Created by SolarLune on 1/9/2015.
@@ -29,7 +26,7 @@ public class InputMouseAxis extends InputBase {
 
         // Mouse Axis Checking
 
-        Vector4f v = Bdx.mouse.clipCoords();
+        //Vector4f v = Bdx.mouse.clipCoords();
 
 //        if ((axisIndex == 0) && (Math.signum(v.x)) == Math.signum(v.x))
 //

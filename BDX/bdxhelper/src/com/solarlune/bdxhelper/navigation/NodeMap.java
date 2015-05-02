@@ -19,7 +19,10 @@ public class NodeMap {
 
     ArrayList<Node> nodes = new ArrayList<Node>();
 
-    public NodeMap(){
+    Scene scene;
+    
+    public NodeMap(Scene scene){
+    	this.scene = scene;
     }
 
     public void addNode(Node node){
@@ -34,7 +37,7 @@ public class NodeMap {
 
     }
 
-    public void updateNeighbors(float minDist, float maxDist, boolean onlyStraight, boolean rayTest){
+    public void updateNeighbors(float minDist, float maxDist, boolean onlyStraight, String rayBlocker){
 
         ArrayList<Node> evaluated = new ArrayList<Node>();
 
@@ -44,28 +47,36 @@ public class NodeMap {
 
                 if (n != m && !evaluated.contains(m)){
 
-                    float dist = (n.getPosition().minus(m.getPosition())).length();
+                    float dist = (n.position().minus(m.position())).length();
 
                     if ((maxDist >= dist || maxDist == 0) && dist >= minDist){
 
                         float tooClose = 0.001f;
 
-                        boolean xg = Math.abs(m.getPosition().x - n.getPosition().x) < tooClose;
-                        boolean yg = Math.abs(m.getPosition().y - n.getPosition().y) < tooClose;
-                        boolean zg = Math.abs(m.getPosition().z - n.getPosition().z) < tooClose;
+                        boolean xg = Math.abs(m.position().x - n.position().x) < tooClose;
+                        boolean yg = Math.abs(m.position().y - n.position().y) < tooClose;
+                        boolean zg = Math.abs(m.position().z - n.position().z) < tooClose;
 
                         if (!onlyStraight || (onlyStraight && API.atLeastBooleans(2, xg, yg, zg))) {
-                        	
-                        	Scene scene = n.gameObject.scene;
-                        	
-                            RayHit ray;
 
-                            if (rayTest)
-                                ray = scene.ray(n.getPosition(), m.getPosition().minus(n.getPosition()));
-                            else
-                                ray = null;
-
-                            if (ray == null) {
+                            boolean blocked = false;
+                            
+                            if (rayBlocker != null) {
+                                
+                            	ArrayList<RayHit> rays = scene.xray(n.position(), m.position().minus(n.position()));
+                            	
+                            	for (RayHit ray : rays) {
+                            		
+                            		if (ray.object.props.containsKey(rayBlocker)) {
+                            			blocked = true;
+                            			break;
+                            		}
+                            		
+                            	}
+                                
+                            }
+             
+                            if (!blocked) {
 
                             	m.neighbors.add(n);
                             	n.neighbors.add(m);
@@ -87,11 +98,11 @@ public class NodeMap {
 
     public void updateNeighbors() {
     	
-    	updateNeighbors(0, 0, false, true);
+    	updateNeighbors(0, 0, false, null);
     	
     }
-    
-    public Node getClosestNode(final Vector3f position, boolean rayTest){
+        
+    public Node getClosestNode(final Vector3f position, String rayBlocker){
 
         ArrayList<Node> sorted = new ArrayList<Node>(nodes);
 
@@ -99,7 +110,7 @@ public class NodeMap {
             @Override
             public int compare(Node o1, Node o2){
             	
-            	if (o1.getPosition().minus(position).length() < o2.getPosition().minus(position).length())
+            	if (o1.position().minus(position).length() < o2.position().minus(position).length())
             		return -1;
             	return 1;
             }
@@ -107,25 +118,38 @@ public class NodeMap {
  
         Node closest;
         
-        if (rayTest) {
+        if (rayBlocker != null) {
 
 	        closest = null;
-	        
-	        System.out.println("yes");
 	
 	        for (Node n : sorted){
+	   
+	            //RayHit ray = scene.ray(n.position(), position.minus(n.position()));
+	            
+	        	ArrayList<RayHit> rays = scene.xray(position, n.position().minus(position));
+	            
+	        	if (rays.size() == 0) {
+	        		closest = n;
+	        		break;
+	        	}
 	        	
-	        	Scene scene = n.gameObject.scene;
-	
-	            RayHit ray = scene.ray(position, n.getPosition().minus(position));
-	
-	            if (ray == null){
-	
-	                closest = n;
-	                break;
-	
-	            }
-	
+	        	boolean blocked = false;
+	        	
+	        	for (RayHit r : rays) {
+	        	
+		            if (r.object.props.containsKey(rayBlocker)){
+		         	
+		                closest = null;
+		                blocked = true;
+		                break;
+		
+		            }
+	            
+	        	}
+	        	
+	        	if (blocked)
+	        		continue;
+	        	
 	        }
         
         }
@@ -140,15 +164,15 @@ public class NodeMap {
     
     public Node getClosestNode(final Vector3f position){
     	
-    	return getClosestNode(position, true);
+    	return getClosestNode(position, null);
     	
     }
 
-    public Path getPathTo(Vector3f endingPoint, Vector3f startingPoint, int maxCheckNum, boolean rayNodeCheck){
+    public Path getPathTo(Vector3f endingPoint, Vector3f startingPoint, int maxCheckNum, String rayBlocker){
     	    	
-    	final Node goal = getClosestNode(endingPoint, rayNodeCheck);
+    	final Node goal = getClosestNode(endingPoint, rayBlocker);
     	
-    	final Node start = getClosestNode(startingPoint, rayNodeCheck);
+    	final Node start = getClosestNode(startingPoint, rayBlocker);
     	
     	if (goal == null) {
     		System.out.println("GOAL point can't be reached from any node on the Nodemap.");
@@ -179,11 +203,8 @@ public class NodeMap {
     			public int compare(Node n1, Node n2) {
     				//float n1Dist = start.getPosition().minus(n1.getPosition()).length() + n1.getPosition().minus(goal.getPosition()).length() + n2.cost;
     				//float n2Dist = start.getPosition().minus(n2.getPosition()).length() + n2.getPosition().minus(goal.getPosition()).length() + n1.cost;
-    				float n1Dist = n1.gCost + n1.getPosition().minus(goal.getPosition()).length() - n2.cost;
-    				float n2Dist = n2.gCost + n2.getPosition().minus(goal.getPosition()).length() - n1.cost;
-    				
-    				System.out.println(n1.cost);
-    				System.out.println(n2.cost);
+    				float n1Dist = n1.gCost + n1.position().minus(goal.position()).length() - n2.cost;
+    				float n2Dist = n2.gCost + n2.position().minus(goal.position()).length() - n1.cost;
     	
     				if (n1Dist < n2Dist)
     					return -1;
@@ -206,7 +227,7 @@ public class NodeMap {
 	    				
 	    				neighbor.parent = current;
 	    				
-	    				neighbor.gCost = current.gCost + (neighbor.getPosition().minus(current.getPosition()).length());
+	    				neighbor.gCost = current.gCost + (neighbor.position().minus(current.position()).length());
 
 	    				openList.add(neighbor);
 	        				
@@ -271,22 +292,22 @@ public class NodeMap {
     }
     
     public Path getPathTo(Vector3f endingPoint, Vector3f startingPoint) {
-    	return getPathTo(endingPoint, startingPoint, 1000, true);    	
+    	return getPathTo(endingPoint, startingPoint, 1000, null);    	
     }
     
-    public void debugDraw(Scene scene){
+    public void debugDraw(){
 
         for (Node n : nodes) {
 
             for (Node m : n.neighbors) {
-
+            	
                 GameObject c = scene.add("Cube");
 
-                c.position(n.getPosition());
+                c.position(n.position());
 
-                c.alignAxisToVec(1, m.getPosition().minus(n.getPosition()));
+                c.alignAxisToVec(1, m.position().minus(n.position()));
 
-                c.scale(1, n.getPosition().minus(m.getPosition()).length(), 1);
+                c.scale(1, n.position().minus(m.position()).length(), 1);
 
             }
 

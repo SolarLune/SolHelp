@@ -1,7 +1,5 @@
 package com.solarlune.bdxhelper.navigation;
 
-import com.nilunder.bdx.GameObject;
-
 import javax.vecmath.Vector3f;
 
 import java.util.ArrayList;
@@ -11,26 +9,29 @@ import java.util.ArrayList;
  */
 public class Node {
 
-    public GameObject gameObject;
+	private Vector3f position;
     public ArrayList<Node> neighbors;
     public Node parent;
     public float cost = 0;
     public float gCost = 0;
     
-    public Node(GameObject owner){
+    public Node(Vector3f position){
         neighbors = new ArrayList<Node>();
-        gameObject = owner;
-        //position = owner.position();
+        this.position = position;
         parent = null;
     }
-
-    public Vector3f getPosition(){
-        return gameObject.position();
+    
+    public Vector3f position(){
+    	return position;
+    }
+    
+    public void position(Vector3f pos){
+    	position = pos;
     }
     
     @Override
     public String toString() {
-    	return "Node: " + getPosition().toString();
+    	return "Node: " + position.toString();
     }
 
 }

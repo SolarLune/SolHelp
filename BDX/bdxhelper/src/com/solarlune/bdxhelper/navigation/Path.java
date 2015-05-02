@@ -22,7 +22,7 @@ public class Path {
 
     public Vector3f currentStep(){
     	if (nodeIndex < points.size() && nodeIndex > -1)
-    		return points.get(nodeIndex).getPosition();
+    		return points.get(nodeIndex).position();
     	    	
     	return null;
     	
