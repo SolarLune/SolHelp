@@ -197,8 +197,7 @@ public class NodeMap {
     	}
     	
     	for (int i = 0; i < maxCheckNum; i++) {
-    		
-    		openList.sort(new Comparator<Node>() {
+    		Collections.sort(openList, new Comparator<Node>() {
     			@Override
     			public int compare(Node n1, Node n2) {
     				//float n1Dist = start.getPosition().minus(n1.getPosition()).length() + n1.getPosition().minus(goal.getPosition()).length() + n2.cost;
