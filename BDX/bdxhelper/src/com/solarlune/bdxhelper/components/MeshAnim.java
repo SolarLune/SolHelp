@@ -123,11 +123,8 @@ public class MeshAnim extends Component <GameObject> {
 	
 	public void showNextFrame(){
 		active.playDir = speed * active.fps < 0 ? -1 : 1;
-		//uvFrame(active.nextFrame());
 		
 		String frame = active.nextFrame();
-		
-		System.out.println(frame);
 		
 		if (currentMesh != frame) {
 			currentMesh = frame;

@@ -28,7 +28,8 @@ public class TouchDamage extends Component<GameObject> {
 					
 					Health health = (Health) other.components.get("Health");
 					
-					health.value -= attack;
+					if (health != null)
+						health.value -= attack;
 					
 				}
 				
