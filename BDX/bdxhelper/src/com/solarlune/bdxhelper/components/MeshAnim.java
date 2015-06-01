@@ -75,14 +75,11 @@ public class MeshAnim extends Component <GameObject> {
 		
 	}
 		
-	public void add(String name, int[] frames){
-				
+	public void add(String name, int[] frames){	
 		add(name, frames, 12, true);
-		
 	}
 	
 	public void add(String name, int[] frames, int fps, boolean looping) {
-		
 		Animation anim = new Animation(name, fps, looping);
 		
 		for (int i : frames) {
@@ -94,7 +91,6 @@ public class MeshAnim extends Component <GameObject> {
 		}
 		
 		animations.put(name, anim);
-		
 	}
 	
 	public void play(String name){
