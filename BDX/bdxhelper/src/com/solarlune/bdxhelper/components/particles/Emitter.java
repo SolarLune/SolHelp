@@ -1,11 +1,10 @@
-package com.solarlune.bdxhelper.particles;
+package com.solarlune.bdxhelper.components.particles;
 
 import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import com.nilunder.bdx.Bdx;
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;
 import com.nilunder.bdx.State;
@@ -13,7 +12,7 @@ import com.nilunder.bdx.components.Halo;
 import com.nilunder.bdx.utils.Random;
 import com.nilunder.bdx.utils.Timer;
 
-public class ParticleSystem extends Component<GameObject> {
+public class Emitter extends Component<GameObject> {
 
 	public ArrayList<GameObject> particles;
 	private ArrayList<String> particleTemplates;	// Names of particles that are randomly chosen for the particles to spawn
@@ -30,12 +29,13 @@ public class ParticleSystem extends Component<GameObject> {
 	public float maxSize;							// Maximum size
 	public int spawnNum;							// Number of particles to spawn at a time
 	public int maxNumParticles;						// Maximum number of particles that can exist
+	public boolean halo;							// If the particles should face the camera
 	
 	public ArrayList<Vector4f> colorStages;			// Color stages
 	
 	private Timer spawnTimer;
 	
-	public ParticleSystem(GameObject g) {
+	public Emitter(GameObject g) {
 		
 		super(g);
 		
@@ -57,6 +57,7 @@ public class ParticleSystem extends Component<GameObject> {
 		maxSize = 1;
 		maxNumParticles = Integer.MAX_VALUE;
 		spawnNum = 1;
+		halo = true;
 		
 		spawnTimer = new Timer();
 		spawnTime(0.01f);		
@@ -87,10 +88,11 @@ public class ParticleSystem extends Component<GameObject> {
 						
 						part.position(g.position().plus(spawnOffset));
 						part.move(Random.direction().mul(spawnRandom));
-						part.components.add(new Halo(part));
+						if (halo)
+							part.components.add(new Halo(part));
 						part.scale(Random.random(minSize, maxSize));
 						
-						Particle partComp = new Particle(part, ParticleSystem.this, Random.random(minLife, maxLife));
+						Particle partComp = new Particle(part, Emitter.this, Random.random(minLife, maxLife));
 						partComp.velocity = new Vector3f(startingVelocity);
 						part.components.add(partComp);	
 						

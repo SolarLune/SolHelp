@@ -1,4 +1,4 @@
-package com.solarlune.bdxhelper.particles;
+package com.solarlune.bdxhelper.components.particles;
 
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
@@ -12,7 +12,7 @@ import com.solarlune.bdxhelper.Math;
 
 public class Particle extends Component<GameObject> {
 
-	public ParticleSystem system;
+	public Emitter system;
 	
 	public Vector3f velocity;
 	
@@ -20,7 +20,7 @@ public class Particle extends Component<GameObject> {
 	
 	private Timer lifeTimer;
 	
-	public Particle(GameObject g, ParticleSystem s, float lifeTime) {
+	public Particle(GameObject g, Emitter s, float lifeTime) {
 		super(g);
 		system = s;
 		state = mainState;

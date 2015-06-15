@@ -2,13 +2,10 @@ package com.solarlune.bdxhelper.components.properties;
 
 import java.util.ArrayList;
 
-import javax.vecmath.Vector3f;
-
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;
 import com.nilunder.bdx.RayHit;
 import com.nilunder.bdx.State;
-import com.solarlune.nmsgamejam.GlobalGame;
 
 public class RoomIdentifier extends Component<GameObject> {
 
