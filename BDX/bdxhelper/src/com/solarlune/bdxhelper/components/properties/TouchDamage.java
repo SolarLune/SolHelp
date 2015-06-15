@@ -1,4 +1,4 @@
-package com.solarlune.bdxhelper.components;
+package com.solarlune.bdxhelper.components.properties;
 
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;
@@ -29,7 +29,7 @@ public class TouchDamage extends Component<GameObject> {
 					Health health = (Health) other.components.get("Health");
 					
 					if (health != null)
-						health.value -= attack;
+						health.sub(attack);
 					
 				}
 				

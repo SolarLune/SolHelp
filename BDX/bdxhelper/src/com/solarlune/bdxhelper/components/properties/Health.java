@@ -1,12 +1,13 @@
-package com.solarlune.bdxhelper.components;
+package com.solarlune.bdxhelper.components.properties;
 
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;
 
 public class Health extends Component<GameObject> {
 
-	public float value;
-	public float maxValue;
+	private float value;
+	private float maxValue;
+	public boolean invulnerable;
 	
 	public Health(GameObject g) {
 		this(g, 10);
@@ -16,6 +17,15 @@ public class Health extends Component<GameObject> {
 		super(g);
 		setMax(value);
 		set(value);
+		invulnerable = false;
+	}
+	
+	public void add(float value){
+		set(get() + value);
+	}
+	public void sub(float value){
+		if (!invulnerable)
+			set(get() - value);
 	}
 	
 	public void set(float value){

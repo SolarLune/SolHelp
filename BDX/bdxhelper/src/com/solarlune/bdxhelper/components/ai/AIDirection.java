@@ -1,4 +1,4 @@
-package com.solarlune.bdxhelper.components;
+package com.solarlune.bdxhelper.components.ai;
 
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;

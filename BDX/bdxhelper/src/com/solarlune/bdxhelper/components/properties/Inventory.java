@@ -1,4 +1,4 @@
-package com.solarlune.bdxhelper.components;
+package com.solarlune.bdxhelper.components.properties;
 
 import java.util.HashMap;
 

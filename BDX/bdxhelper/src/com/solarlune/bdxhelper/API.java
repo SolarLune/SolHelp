@@ -86,5 +86,5 @@ public final class API {
     static public Vector4f randomizeVector4f(Vector4f top) {
     	return randomizeVector4f(new Vector4f(0,0,0,0), top);
     }
-
+    
 }
