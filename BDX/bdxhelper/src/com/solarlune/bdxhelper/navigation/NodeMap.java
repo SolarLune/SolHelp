@@ -17,7 +17,7 @@ import java.util.LinkedList;
  */
 public class NodeMap {
 
-    ArrayList<Node> nodes = new ArrayList<Node>();
+    public ArrayList<Node> nodes = new ArrayList<Node>();
 
     Scene scene;
     
@@ -35,6 +35,22 @@ public class NodeMap {
 
         nodes.remove(node);
 
+    }
+    
+    public Node getNode(Vector3f position){
+    	
+    	Node ret = null;
+    	
+    	for (Node n : nodes) {
+    		
+    		if (n.position().equals(position))
+    			
+    			ret = n;
+    		
+    	}
+    	
+    	return ret;
+    	
     }
 
     public void updateNeighbors(float minDist, float maxDist, boolean onlyStraight, String rayBlocker){
@@ -174,15 +190,15 @@ public class NodeMap {
     	
     	final Node start = getClosestNode(startingPoint, rayBlocker);
     	
-    	if (goal == null) {
-    		System.out.println("GOAL point can't be reached from any node on the Nodemap.");
-    		return null;
-    	}
-    	
-    	else if (start == null) {
-    		System.out.println("START point can't be reached from any node on the Nodemap.");
-    		return null;
-    	}
+//    	if (goal == null) {
+//    		System.out.println("GOAL point can't be reached from any node on the Nodemap.");
+//    		return null;
+//    	}
+//    	
+//    	else if (start == null) {
+//    		System.out.println("START point can't be reached from any node on the Nodemap.");
+//    		return null;
+//    	}
     	    	
     	LinkedList<Node> openList = new LinkedList<Node>();
     	openList.add(start);
@@ -202,9 +218,9 @@ public class NodeMap {
     			public int compare(Node n1, Node n2) {
     				//float n1Dist = start.getPosition().minus(n1.getPosition()).length() + n1.getPosition().minus(goal.getPosition()).length() + n2.cost;
     				//float n2Dist = start.getPosition().minus(n2.getPosition()).length() + n2.getPosition().minus(goal.getPosition()).length() + n1.cost;
-    				float n1Dist = n1.gCost + n1.position().minus(goal.position()).length() - n2.cost;
-    				float n2Dist = n2.gCost + n2.position().minus(goal.position()).length() - n1.cost;
-    	
+    				float n1Dist = n1.gCost + n1.position().minus(goal.position()).length() - n2.cost();
+    				float n2Dist = n2.gCost + n2.position().minus(goal.position()).length() - n1.cost();
+    				
     				if (n1Dist < n2Dist)
     					return -1;
     				return 1;
@@ -249,7 +265,7 @@ public class NodeMap {
     			
     			exitLoop = true;
     			pathFound = false;
-    			System.out.println("Can't get to goal; are all nodes in node-map connected?");
+    			//System.out.println("Can't get to goal; are all nodes in node-map connected?");
     		}
     		
     		if (exitLoop)
@@ -259,13 +275,13 @@ public class NodeMap {
     	
     	if (pathFound) {
     	
-	    	LinkedList<Node> path = new LinkedList<Node>();
+	    	LinkedList<Vector3f> path = new LinkedList<Vector3f>();
 			
 			Node targetSquare = goal;
 			
 			for (int x = 0; x < maxCheckNum; x++) {
 				
-				path.add(targetSquare);
+				path.add(targetSquare.position());
 				
 				if (targetSquare.equals(start))
 					
@@ -283,8 +299,8 @@ public class NodeMap {
 				pathFound = false;
     	}
 		
-    	if (!pathFound)
-			System.out.println("No path found. :<");
+//    	if (!pathFound)
+//			System.out.println("No path found. :<");
     	
     	return null;
     	
@@ -294,19 +310,19 @@ public class NodeMap {
     	return getPathTo(endingPoint, startingPoint, 1000, null);    	
     }
     
-    public void debugDraw(){
+    public void debugDraw(String debugObject){
 
         for (Node n : nodes) {
-
+        	
             for (Node m : n.neighbors) {
             	
-                GameObject c = scene.add("Cube");
+                GameObject c = scene.add(debugObject);
 
                 c.position(n.position());
 
                 c.alignAxisToVec(1, m.position().minus(n.position()));
 
-                c.scale(1, n.position().minus(m.position()).length(), 1);
+                c.scale(1, n.position().minus(m.position()).length() / 2, 1);
 
             }
 

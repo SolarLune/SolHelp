@@ -1,9 +1,10 @@
 package com.solarlune.bdxhelper.choice;
 
-import com.nilunder.bdx.GameObject;
+import com.nilunder.bdx.Scene;
 import com.nilunder.bdx.Text;
 
 import javax.vecmath.Vector3f;
+
 import java.util.ArrayList;
 
 /**
@@ -15,17 +16,17 @@ public class Screen {
     public ArrayList<Choice> choices;
     public boolean active = true;
     int currentChoiceIndex = 0;
-	GameObject owner;
+	Scene scene;
 
 	Vector3f areaStart = new Vector3f();
 	Vector3f areaEnd = new Vector3f();
 
-    public Screen(GameObject owner, String name){
+    public Screen(Scene scene, String name){
         choices = new ArrayList<Choice>();
-		this.owner = owner;
+		this.scene = scene;
     }
-    public Screen(GameObject owner){
-        this(owner, "default");
+    public Screen(Scene scene){
+        this(scene, "default");
     }
 
     public void add(Choice c){
@@ -71,7 +72,7 @@ public class Screen {
 				c.setTextMesh(null);
 			}
 
-			Text t = (Text) owner.scene.add(textName);
+			Text t = (Text) scene.add(textName);
 
 			c.setTextMesh(t);
 
@@ -146,17 +147,6 @@ public class Screen {
 		nextChoice(1);
 	}
 
-    public void prevChoice(int skipBack){
-		if (active) {
-			currentChoiceIndex -= skipBack;
-			enforceBounds();
-		}
-    }
-
-	public void prevChoice(){
-		prevChoice(1);
-	}
-
     public void setChoice(int index){
 		if (active) {
 			currentChoiceIndex = index;
@@ -177,10 +167,7 @@ public class Screen {
 
     public Choice currentChoice(){
         enforceBounds();
-        if (currentChoiceIndex >= 0 && currentChoiceIndex < choices.size())
-            return choices.get(currentChoiceIndex);
-
-        return null;
+        return choices.get(currentChoiceIndex);
     }
 
 	public int getChoiceIndex(Choice c){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 import com.nilunder.bdx.Bdx;
 import com.nilunder.bdx.utils.Random;
@@ -45,7 +46,7 @@ public final class Math {
     	return v;
     	
     }
-	
+		
 	public static Vector2f randomCardinalVector2f(){
 		
 		ArrayList<Vector2f> d = new ArrayList<Vector2f>();
@@ -59,11 +60,41 @@ public final class Math {
 		
 	}
 		
-	public static float oscillateSin(float oscRate, float oscRange){
+	public static Vector2f roundVector(Vector2f vec){
+		Vector2f out = new Vector2f(java.lang.Math.round(vec.x), 
+				java.lang.Math.round(vec.y));
+		return out;
+	}
+	
+	public static Vector3f roundVector(Vector3f vec){
+		Vector3f out = new Vector3f(java.lang.Math.round(vec.x), 
+				java.lang.Math.round(vec.y), 
+				java.lang.Math.round(vec.z));
+		return out;
+	}
+	
+	public static Vector4f roundVector(Vector4f vec){
+		Vector4f out = new Vector4f(java.lang.Math.round(vec.x), 
+				java.lang.Math.round(vec.y), 
+				java.lang.Math.round(vec.z), 
+				java.lang.Math.round(vec.w));
+		return out;
+	}
+	
+	public static float oscillateSin(float oscRate, float oscRange, boolean baseOffset, float timeOffset){
 	    	
-    	return (float) java.lang.Math.sin(Bdx.time * java.lang.Math.PI * oscRate) * oscRange;
+		float value = (float) java.lang.Math.sin((Bdx.time + timeOffset) * (java.lang.Math.PI * 2) * oscRate) * oscRange;
+		
+		if (baseOffset)
+			value += oscRange / 2;
+		
+    	return value;
     	
     }
+	
+	public static float oscillateSin(float oscRate, float oscRange, boolean baseOffset){
+		return oscillateSin(oscRate, oscRange, baseOffset, 0);
+	}
 	
 	public static float lerp(float valueOne, float valueTwo, float percent){
 		return valueOne + percent * (valueTwo - valueOne);

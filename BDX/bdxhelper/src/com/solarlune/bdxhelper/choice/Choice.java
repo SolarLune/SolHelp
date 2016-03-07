@@ -9,7 +9,7 @@ public class Choice {
 
     private String name;
 	public Screen screen;
-	public Text textmesh;
+	public Text textMesh;
 
     public Choice(String name){
         setName(name);
@@ -20,11 +20,11 @@ public class Choice {
 	}
 
 	public Text getTextMesh(){
-		return textmesh;
+		return textMesh;
 	}
 
 	public void setTextMesh(Text mesh){
-		textmesh = mesh;
+		textMesh = mesh;
 		setName(name);
 	}
 
@@ -32,11 +32,11 @@ public class Choice {
 
 		this.name = name;
 
-		if (textmesh != null && !textmesh.valid())
-			textmesh = null;
-
-		if (textmesh != null){
-			textmesh.set(name); // Update text
+		if (textMesh != null){
+			if (!textMesh.valid())
+				textMesh = null;
+			else
+				textMesh.text(name); // Update text
 		}
 
 	}

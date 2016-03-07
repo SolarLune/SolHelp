@@ -26,7 +26,7 @@ public class TouchDamage extends Component<GameObject> {
 						(other.components.get("Type") != null && 
 						((Type) other.components.get("Type")).value.equals(targetType))) {
 					
-					Health health = (Health) other.components.get("Health");
+					Gauge health = (Gauge) other.components.get("Health");
 					
 					if (health != null)
 						health.sub(attack);

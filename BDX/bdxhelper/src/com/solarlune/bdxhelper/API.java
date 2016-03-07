@@ -87,4 +87,19 @@ public final class API {
     	return randomizeVector4f(new Vector4f(0,0,0,0), top);
     }
     
+    static public ArrayList<GameObject> getObjectByName(ArrayList<GameObject> collection, String name){
+    	
+    	ArrayList<GameObject> list = new ArrayList<GameObject>();
+    	
+    	for (GameObject g : collection) {
+    		
+    		if (g.name.contains(name))
+    			list.add(g);
+    		
+    	}
+    	
+    	return list;
+    	
+    }
+    
 }

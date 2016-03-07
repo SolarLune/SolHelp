@@ -7,6 +7,7 @@ import com.nilunder.bdx.Bdx;
 import com.nilunder.bdx.Component;
 import com.nilunder.bdx.GameObject;
 import com.nilunder.bdx.State;
+import com.nilunder.bdx.utils.Color;
 import com.nilunder.bdx.utils.Timer;
 import com.solarlune.bdxhelper.Math;
 
@@ -34,7 +35,7 @@ public class Particle extends Component<GameObject> {
 		public void main(){
 			
 			velocity.add(system.gravityDirection.mul(Bdx.TICK_TIME));
-			
+						
 			if (velocity.length() > system.friction) {
 				Vector3f neg = velocity.negated();
 				velocity.add(neg.mul(system.friction));
@@ -44,7 +45,7 @@ public class Particle extends Component<GameObject> {
 			
 			Vector3f vel = new Vector3f(velocity);
 			vel.add(system.windDirection);
-									
+			
 			g.move(vel.mul(Bdx.TICK_TIME));
 			
 			if (lifeTimer.done()) {
@@ -60,19 +61,19 @@ public class Particle extends Component<GameObject> {
 					int stageNum = system.colorStages.size() - 1;
 					int currentStage = java.lang.Math.min((int) java.lang.Math.floor(stageNum * lifePercent), system.colorStages.size() - 1);				
 		
-					Vector4f currentColor = system.colorStages.get(currentStage);
-					Vector4f nextColor = currentColor;
+					Color currentColor = system.colorStages.get(currentStage);
+					Color nextColor = currentColor;
 					
 					float stagePercent = (lifePercent * stageNum) - currentStage;
 					
 					if (system.colorStages.size() > currentStage + 1)
 						nextColor = system.colorStages.get(currentStage + 1);
 					
-					Vector4f c = new Vector4f();
-					c.w = Math.lerp(currentColor.w, nextColor.w, stagePercent);
-					c.x = Math.lerp(currentColor.x, nextColor.x, stagePercent);
-					c.y = Math.lerp(currentColor.y, nextColor.y, stagePercent);
-					c.z = Math.lerp(currentColor.z, nextColor.z, stagePercent);
+					Color c = new Color();
+					c.a = Math.lerp(currentColor.a, nextColor.a, stagePercent);
+					c.r = Math.lerp(currentColor.r, nextColor.r, stagePercent);
+					c.g = Math.lerp(currentColor.g, nextColor.g, stagePercent);
+					c.b = Math.lerp(currentColor.b, nextColor.b, stagePercent);
 					
 					g.color(c);
 					

@@ -23,7 +23,7 @@ public class Type extends Component<GameObject> {
 			
 			if (other != g && other.components.get("Type") != null && ( (Type) other.components.get("Type")).value.equals(type)) {
 				found.add(other);
-				if (all == false)
+				if (!all)
 					break;
 			}
 			
@@ -31,10 +31,6 @@ public class Type extends Component<GameObject> {
 		
 		return found;
 		
-	}
-	
-	public ArrayList<GameObject> find(String type){
-		return find(type, true);
 	}
 
 }

@@ -9,32 +9,44 @@ import javax.vecmath.Vector3f;
  * Created by SolarLune on 1/14/2015.
  */
 
-public class Path {
+public class Path extends LinkedList<Vector3f>{
 
-    LinkedList<Node> points;
-    int nodeIndex = 0;
+    public int nodeIndex = 0;
     public boolean reversed = false;
     public boolean reachedEnd = false;
 
-    public Path(LinkedList<Node> points){
-        this.points = new LinkedList<Node>(points);
-    }
+    public Path(LinkedList<Vector3f> path) {
+    	super(path);
+	}
 
-    public Vector3f currentStep(){
-    	if (nodeIndex < points.size() && nodeIndex > -1)
-    		return points.get(nodeIndex).position();
-    	    	
-    	return null;
-    	
+	public Vector3f get(int index){
+    	int value = Math.max(Math.min(index, size() - 1), 0);
+    	return super.get(value);
+    }
+    
+    public Vector3f getCurrentStep(){
+    	return get(nodeIndex);
+    }
+    
+    public Vector3f getNextStep(){
+    	return get(nodeIndex + 1);
+    }
+    
+    public Vector3f getPreviousStep(){
+    	return get(nodeIndex - 1);
     }
     
     public void gotoNextStep(){
     	gotoStep(nodeIndex + 1);
     }
     
+    public void gotoPreviousStep(){
+    	gotoStep(nodeIndex - 1);
+    }
+    
     public void gotoStep(int step){
-    	
-    	if (step >= points.size()) {
+    	    	
+    	if (step >= size() - 1) {
     		reachedEnd = true;
     	}
     	else {
@@ -43,21 +55,25 @@ public class Path {
     	}
     	
     }
+
+    public boolean atCurrentStep(Vector3f position, float margin){
+    	return position.minus(getCurrentStep()).length() < margin;
+    }
+    
+    public boolean atCurrentStep(Vector3f position){
+    	return atCurrentStep(position, 0.01f);
+    }
     
     public void reverse(){
-    	Collections.reverse(points);
+    	Collections.reverse(this);
     	reversed = !reversed;
     }
 
     public void resetPath(){
         if (reversed)
-        	Collections.reverse(points);
+        	Collections.reverse(this);
         reversed = false;
         gotoStep(0);
     }
     
-    public String toString(){
-    	return this.points.toString();	
-    }
-
 }
