@@ -22,9 +22,7 @@ public class TouchDamage extends Component<GameObject> {
 			
 			for (GameObject other : g.touchingObjects) {
 				
-				if (targetType == null || 
-						(other.components.get("Type") != null && 
-						((Type) other.components.get("Type")).value.equals(targetType))) {
+				if (targetType == null || other.props.containsKey(targetType)) {
 					
 					Gauge health = (Gauge) other.components.get("Health");
 					

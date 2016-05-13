@@ -21,8 +21,9 @@ public class GroundRay extends Component<GameObject> {
 
 	public float groundOffset;
 	public float rayExtraDistance;
-	public boolean physicsEnabled;
-	public boolean alignToGround;
+	public boolean snapToGround = true;
+	public boolean alignToGround = true;
+	public String ignoreProperty = "notGround";
 
 	public GameObject hitObject;
 	public GameObject lastHitObject;
@@ -30,8 +31,9 @@ public class GroundRay extends Component<GameObject> {
 	public Vector3f lastHitPosition;
 	public Vector3f hitNormal;
 	public Vector3f lastHitNormal;
-	public Vector3f down;
-	public boolean debugOn;
+	public Vector3f down = new Vector3f(0, 0, -1);
+	public float minimumEscapeSpeed = 1;
+	public boolean debugOn = false;
 
 	public GroundRay(GameObject g) {
 		this(g, 0.05f, 0.05f);
@@ -42,15 +44,11 @@ public class GroundRay extends Component<GameObject> {
 		state = main;
 		this.rayExtraDistance = rayExtra;
 		this.groundOffset = groundOffset;
-		physicsEnabled = true;
-		alignToGround = true;
-		down = new Vector3f(0, 0, -1);
-		debugOn = false;
 	}
 
 	State main = new State(){
 
-		public void main(){
+		public void main() {
 
 			boolean childCasters = false;
 
@@ -100,7 +98,7 @@ public class GroundRay extends Component<GameObject> {
 
 				for (RayHit ray : result.results) {
 
-					if (!ray.object.props.containsKey("notGround") && ray.object != g) {	// Success!
+					if (!ray.object.props.containsKey(ignoreProperty) && ray.object != g) {	// Success!
 
 						if (debugOn)
 							g.scene.drawLine(result.startPos, result.startPos.plus(down), new Color(0, 1, 0, 1));
@@ -109,12 +107,12 @@ public class GroundRay extends Component<GameObject> {
 						hitPosition = ray.position;
 						hitNormal = ray.normal;
 
-						if (g.velocityLocal().z < 1) {
+						if (g.velocityLocal().z < minimumEscapeSpeed) {
 
 							if (alignToGround)
 								g.alignAxisToVec(2, ray.normal);
 
-							if (physicsEnabled) {
+							if (snapToGround) {
 								g.position(ray.position);
 								if (childCasters) {
 									g.move(result.offset);

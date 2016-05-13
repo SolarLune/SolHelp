@@ -7,32 +7,36 @@ import com.nilunder.bdx.State;
 
 public class Gauge extends Component<GameObject> {
 
-	public enum Adjust {  	// What happens if you adjust the maximum value (e.g. when MAX was 10, but now = 20, and VAL = 5)
+	public enum Adjust {  	// What happens if you adjust the maximum value (e.g. when VAL = 5 and MAX was 10, but MAX changes to 20)
 		NONE,    			// Don't do anything (M = 20, V = 5)
-		RATIO,  			// Push value to maintain ratio (M = 20, V = 10)
-		VALUE,  			// Push value to maintain value difference (M = 20, V = 15)
+		RATIO,  			// Set value to maintain ratio (M = 20, V = 10)
+		VALUE,  			// Set value to maintain value difference (M = 20, V = 15)
+		REFILL,				// Set value to match the new maximum (M = 20, V = 20)
+	}
+
+	public enum Regen {
+		VALUE,				// Regen value per second
+		PERCENTAGE,			// Regen percentage of max per second
 	}
 	
 	private float value;
 	private float maxValue;
-	private float prevValue;
-	public boolean invulnerable;
-	public float regenRate;				// Percentage of the max to regen a second
-	public Adjust onMaxAdjust;				// What to do when the max is adjusted
-	public boolean allowNegatives;
-	
+	public boolean invulnerable = false;
+	public float regenRate = 0;				// Regeneration per second
+	public Adjust onMaxAdjust = Adjust.NONE;			// What to do when the max is adjusted
+	public Regen regenMode = Regen.PERCENTAGE;				// Regeneration mode
+	public boolean allowNegatives = false;
+    public boolean bottomedOut = false;
+    public float bottomOutRelease = 0.2f;   // What percentage to release regen penalty when bottomed out (if atBottom is set to CUTREGEN)
+    public float bottomOutRegenCut = 0.5f;  // What percentage to cut regen by when bottomed out
+	public float regenBoostOnPercentage = 0.0f;	// How much regen boost to give according to the percentage remaining
+
 	public Gauge(GameObject g, float value, String name) {
-		
 		super(g);
-		setMax(value);
-		set(value);
-		invulnerable = false;
-		regenRate = 0;
+		max(value);
+		value(value);
 		state = stateMain;
 		this.name = name;
-		onMaxAdjust = Adjust.NONE;
-		allowNegatives = false;
-		
 	}
 	
 	public Gauge(GameObject g) {
@@ -40,39 +44,43 @@ public class Gauge extends Component<GameObject> {
 	}
 	
 	public void add(float value){
-		set(get() + value);
+		value(value() + value);
 	}
 	
 	public void sub(float value){
 		if (!invulnerable)
-			set(get() - value);
+			value(value() - value);
 	}
 
 	public void mul(float value) {
-		set(get() * value);
+		value(value() * value);
 	}
 
-	public void set(float value){
+	public void div(float value) {
+		value(value() / value);
+	}
+
+	public void value(float value){
 		if (allowNegatives)
-			this.value = Math.min(value, getMax());
+			this.value = Math.min(value, max());
 		else
-			this.value = Math.max(Math.min(value, getMax()), 0);
+			this.value = Math.max(Math.min(value, max()), 0);
 	}
-	
-	public void setMax(float value) {
-		readjustStrat(value);
-		this.maxValue = value;
-	}
-		
-	public float get() {
+
+	public float value() {
 		return value;
 	}
 	
-	public float getAsPercentage(){
-		return get() / getMax();
+	public float valueAsPercentage(){
+		return value() / max();
+	}
+
+	public void max(float value) {
+		readjustStrat(value);
+		this.maxValue = value;
 	}
 	
-	public float getMax(){
+	public float max(){
 		return maxValue;
 	}
 			
@@ -85,20 +93,37 @@ public class Gauge extends Component<GameObject> {
 			float diff = newMax - maxValue;
 			value += diff;
 		}
+		else if (onMaxAdjust == Adjust.REFILL)
+			value = newMax;
 	}
 	
-	public void refill(){
-		set(getMax());
-	}
-
 	State stateMain = new State(){
 		
 		public void main() {
-			if (regenRate != 0) 
-				add((maxValue / regenRate) * Bdx.TICK_TIME);
 
-			prevValue = value;
-		};
+            float regen = 0;
+
+			if (regenRate != 0) {
+				if (regenMode == Regen.PERCENTAGE)
+					regen = (maxValue / regenRate) * Bdx.TICK_TIME;
+				else
+					regen = regenRate * Bdx.TICK_TIME;
+			}
+
+            regen += regenBoostOnPercentage * valueAsPercentage() * Bdx.TICK_TIME;
+
+            if (value() <= 0)
+                bottomedOut = true;
+
+            if (valueAsPercentage() >= bottomOutRelease)
+                bottomedOut = false;
+
+            if (bottomedOut)
+                regen *= bottomOutRegenCut;
+
+            add(regen);
+
+        };
 		
 	};
 

@@ -75,7 +75,7 @@ public class Particle extends Component<GameObject> {
 					c.g = Math.lerp(currentColor.g, nextColor.g, stagePercent);
 					c.b = Math.lerp(currentColor.b, nextColor.b, stagePercent);
 					
-					g.color(c);
+					g.materials.color(c);
 					
 				}
 				

@@ -36,7 +36,7 @@ public class Flash extends Component<GameObject> {
 	public State main = new State(){
 		public void main() {
 
-			Color c = g.color();
+			Color c = g.materials.get(0).color();
 
 			float t = 0.5f + (float) Math.sin((flashTime * Math.PI) / flashDuration) * 0.5f;
 
@@ -45,7 +45,7 @@ public class Flash extends Component<GameObject> {
 			c.b = firstColor.b + ((secondColor.b - firstColor.b) * t); // B
 			c.a = firstColor.a + ((secondColor.a - firstColor.a) * t); // A
 
-			g.color(c);
+			g.materials.color(c);
 			
 			flashTime += Bdx.TICK_TIME;
 

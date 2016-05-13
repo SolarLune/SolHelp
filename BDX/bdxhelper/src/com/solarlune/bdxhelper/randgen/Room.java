@@ -419,7 +419,7 @@ public class Room extends ArrayList<ArrayList<Cell>> {
 						rots.add(new Vector3f(0, 0, (float) Math.PI));
 						rots.add(new Vector3f(0, 0, -(float) Math.PI / 2));
 						
-						//createdCell.rotate(Random.choice(rots));
+						//createdCell.rotate(Random.dialogChoice(rots));
 					
 					}
 					
