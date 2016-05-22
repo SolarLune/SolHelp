@@ -22,8 +22,9 @@ public class GroundRay extends Component<GameObject> {
 	public float groundOffset;
 	public float rayExtraDistance;
 	public boolean snapToGround = true;
-	public boolean alignToGround = true;
-	public String ignoreProperty = "notGround";
+	public boolean alignToGround = false;
+	public ArrayList<String> ignoredProperties;
+	public ArrayList<String> checkedProperties;
 
 	public GameObject hitObject;
 	public GameObject lastHitObject;
@@ -34,6 +35,7 @@ public class GroundRay extends Component<GameObject> {
 	public Vector3f down = new Vector3f(0, 0, -1);
 	public float minimumEscapeSpeed = 1;
 	public boolean debugOn = false;
+    public ArrayList<GameObject> castPoints;
 
 	public GroundRay(GameObject g) {
 		this(g, 0.05f, 0.05f);
@@ -44,6 +46,10 @@ public class GroundRay extends Component<GameObject> {
 		state = main;
 		this.rayExtraDistance = rayExtra;
 		this.groundOffset = groundOffset;
+		ignoredProperties = new ArrayList<String>();
+		checkedProperties = new ArrayList<String>();
+		ignoredProperties.add("notGround");
+        castPoints = new ArrayList<GameObject>();
 	}
 
 	State main = new State(){
@@ -66,7 +72,7 @@ public class GroundRay extends Component<GameObject> {
 
 			ArrayList<RayResults> allResults = new ArrayList<RayResults>();
 
-			if (g.children.getByProperty("GroundCastPoint") == null) {
+			if (castPoints.size() == 0) {
 				RayResults r = new RayResults();
 				r.startPos = g.position().plus(down.mul(height));
 				r.results.addAll(g.scene.xray(g.position().plus(down.mul(height)), down.mul(rayDist)));
@@ -74,14 +80,12 @@ public class GroundRay extends Component<GameObject> {
 			}
 			else {
 				childCasters = true;
-				for (GameObject child : g.children){
-					if (child.props.get("GroundCastPoint") != null) {
-						RayResults r = new RayResults();
-						r.startPos = child.position();
-						r.results.addAll(g.scene.xray(child.position(), down.mul(rayDist)));
-						r.offset = g.position().minus(child.position());
-						allResults.add(r);
-					}
+				for (GameObject castPoint : castPoints){
+                    RayResults r = new RayResults();
+                    r.startPos = castPoint.position();
+                    r.results.addAll(g.scene.xray(castPoint.position(), down.mul(rayDist)));
+                    r.offset = g.position().minus(castPoint.position());
+                    allResults.add(r);
 				}
 			}
 
@@ -94,41 +98,57 @@ public class GroundRay extends Component<GameObject> {
 			for (RayResults result : allResults) {
 
 				if (debugOn)
-					g.scene.drawLine(result.startPos, result.startPos.plus(down), new Color(1, 0, 0, 1));
+					g.scene.drawLine(result.startPos, result.startPos.plus(down.mul(rayDist)), new Color(1, 0, 0, 1));
 
 				for (RayHit ray : result.results) {
 
-					if (!ray.object.props.containsKey(ignoreProperty) && ray.object != g) {	// Success!
+					boolean skip = false;
 
-						if (debugOn)
-							g.scene.drawLine(result.startPos, result.startPos.plus(down), new Color(0, 1, 0, 1));
+					if (checkedProperties.size() > 0) {
+						skip = true;
+						for (String propName : checkedProperties)
+							if (ray.object.props.containsKey(propName))
+								skip = false;
+					}
+					for (String propName : ignoredProperties){
+						if (ray.object.props.containsKey(propName))
+							skip = true;
+					}
+					if (ray.object == g)
+						skip = true;
 
-						hitObject = ray.object;
-						hitPosition = ray.position;
-						hitNormal = ray.normal;
+					if (skip)
+						continue;
 
-						if (g.velocityLocal().z < minimumEscapeSpeed) {
+					// Success!
 
-							if (alignToGround)
-								g.alignAxisToVec(2, ray.normal);
+					if (debugOn)
+						g.scene.drawLine(result.startPos, result.startPos.plus(down), new Color(0, 1, 0, 1));
 
-							if (snapToGround) {
-								g.position(ray.position);
-								if (childCasters) {
-									g.move(result.offset);
-									g.move(down.negated().mul(groundOffset));
-								} else
-									g.move(down.negated().mul(height + groundOffset));
-								Vector3f vel = g.velocityLocal();
-								vel.z = 0;
-								g.velocityLocal(vel);
-							}
+					hitObject = ray.object;
+					hitPosition = ray.position;
+					hitNormal = ray.normal;
 
+					if (g.velocityLocal().z < minimumEscapeSpeed) {
+
+						if (alignToGround)
+							g.alignAxisToVec(2, ray.normal);
+
+						if (snapToGround) {
+							g.position(ray.position);
+							if (childCasters) {
+								g.move(result.offset);
+								g.move(down.negated().mul(groundOffset));
+							} else
+								g.move(down.negated().mul(height + groundOffset));
+							Vector3f vel = g.velocityLocal();
+							vel.z = 0;
+							g.velocityLocal(vel);
 						}
 
-						break;
-
 					}
+
+					break;
 
 				}
 
