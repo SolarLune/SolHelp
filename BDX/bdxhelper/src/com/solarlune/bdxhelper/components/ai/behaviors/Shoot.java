@@ -16,11 +16,12 @@ public class Shoot extends Behavior {
 
 	public String bulletObject;
 	public Vector3f bulletDirection;
-	public Vector3f spawnPosition;
+	public Vector3f spawnOffset;
 	public float bulletSpeed;
 	public Color bulletColor;
 	public String bulletProp;
 	public float bulletDeviance;
+	public boolean alignBulletToDirection = false;
 
 	private GameObject spawnedBullet;
 
@@ -33,7 +34,7 @@ public class Shoot extends Behavior {
 		this.bulletObject = bullet;
 		this.bulletDirection = bulletDirection;
 		this.bulletSpeed = bulletSpeed;
-		this.spawnPosition = spawnOffset;
+		this.spawnOffset = spawnOffset;
 		if (bulletColor == null)
 			this.bulletColor = new Color(1, 1, 1, 1);
 		else
@@ -44,14 +45,15 @@ public class Shoot extends Behavior {
 
 	public void main(){
 		GameObject b = g.scene.add(bulletObject);
-		b.position(g.position().plus(spawnPosition));
-		b.materials.color(bulletColor);
+		b.position(g.position().plus(spawnOffset));
+		b.mesh().materials.color(bulletColor);
 		for (GameObject c : b.childrenRecursive())
-			c.materials.color(bulletColor);
+			c.mesh().materials.color(bulletColor);
 		if (bulletProp != null)
 			b.props.put(bulletProp, new JsonValue(true));
-		Vector3f vel = bulletDirection.mul(bulletSpeed);
-		vel = Matrix3f.rotation(new Vector3f(0, 1, 0), Random.random(-bulletDeviance, bulletDeviance)).mult(vel);
+		if (alignBulletToDirection)
+			b.alignAxisToVec(0, bulletDirection);
+		Vector3f vel = bulletDirection.mul(bulletSpeed).rotated(new Vector3f(0, 1, 0), Random.random(-bulletDeviance, bulletDeviance));
 		b.velocity(vel);
 		spawnedBullet = b;
 	}

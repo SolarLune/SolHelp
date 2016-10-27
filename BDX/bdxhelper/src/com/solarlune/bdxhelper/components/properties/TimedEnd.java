@@ -10,19 +10,19 @@ import com.nilunder.bdx.utils.Timer;
  */
 public class TimedEnd extends Component<GameObject> {
 
-	public Timer timer;
+    public Timer timer;
 
-	public TimedEnd(GameObject g, float time){
-		super(g);
-		timer = new Timer(time);
-		state = main;
-	}
+    public TimedEnd(GameObject g, float time){
+        super(g);
+        timer = new Timer(time);
+        state = main;
+    }
 
-	State main = new State(){
-		public void main(){
-			if (timer.done())
-				g.end();
-		}
-	};
+    State main = new State(){
+        public void main(){
+            if (timer.done())
+                g.end();
+        }
+    };
 
 }

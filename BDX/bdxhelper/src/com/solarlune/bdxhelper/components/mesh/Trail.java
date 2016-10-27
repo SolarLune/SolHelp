@@ -73,21 +73,21 @@ public class Trail extends Component<GameObject> {
 
             vertOffsets = new HashMap<Integer, Vector3f>();
 
-            for (int i = 0; i < g.mesh.getVertexCount(materialIndex); i++)
-                vertOffsets.put(i, g.mesh.vertPos(materialIndex, i));
+            for (int i = 0; i < g.mesh().getVertexCount(materialIndex); i++)
+                vertOffsets.put(i, g.mesh().vertPos(materialIndex, i));
 
             vertPairs = new ArrayList<VertexCollection>();
 
             HashMap<Float, ArrayList<Integer>> vp = new HashMap<Float, ArrayList<Integer>>();
 
-            for (int i = 0; i < g.mesh.getVertexCount(materialIndex); i++) {
+            for (int i = 0; i < g.mesh().getVertexCount(materialIndex); i++) {
                 float vertPos;
                 if (axis.toLowerCase().equals("x"))
-                    vertPos = Math.round(g.mesh.vertPos(materialIndex, i).x * 100.0f) / 100.0f;
+                    vertPos = Math.round(g.mesh().vertPos(materialIndex, i).x * 100.0f) / 100.0f;
                 else if (axis.toLowerCase().equals("y"))
-                    vertPos = Math.round(g.mesh.vertPos(materialIndex, i).y * 100.0f) / 100.0f;
+                    vertPos = Math.round(g.mesh().vertPos(materialIndex, i).y * 100.0f) / 100.0f;
                 else
-                    vertPos = Math.round(g.mesh.vertPos(materialIndex, i).z * 100.0f) / 100.0f;
+                    vertPos = Math.round(g.mesh().vertPos(materialIndex, i).z * 100.0f) / 100.0f;
 
                 if (!vp.containsKey(vertPos))
                     vp.put(vertPos, new ArrayList<Integer>());
@@ -169,26 +169,26 @@ public class Trail extends Component<GameObject> {
 
                             if (stretch) {
                                 diff = ori.mult(pos.minus(target.position()));
-                                g.mesh.vertPos(materialIndex, v, target.orientation().mult(vertOffsets.get(v).plus(diff)));
+                                g.mesh().vertPos(materialIndex, v, target.orientation().mult(vertOffsets.get(v).plus(diff)));
                             }
                             else
-                                g.mesh.vertPos(materialIndex, v, target.orientation().mult(vertOffsets.get(v)));
+                                g.mesh().vertPos(materialIndex, v, target.orientation().mult(vertOffsets.get(v)));
 
-                            Vector3f vPos = g.mesh.vertPos(materialIndex, v);
-                            g.mesh.vertPos(materialIndex, v, oriInverted.mult(vPos));
+                            Vector3f vPos = g.mesh().vertPos(materialIndex, v);
+                            g.mesh().vertPos(materialIndex, v, oriInverted.mult(vPos));
 
                         }
                         else {
 
                             if (stretch) {
                                 diff = ori.mult(pos.minus(target.position()));
-                                g.mesh.vertPos(materialIndex, v, invTargetOri.mult(vertOffsets.get(v).plus(diff)));
+                                g.mesh().vertPos(materialIndex, v, invTargetOri.mult(vertOffsets.get(v).plus(diff)));
                             }
                             else
-                                g.mesh.vertPos(materialIndex, v, invTargetOri.mult(vertOffsets.get(v)));
+                                g.mesh().vertPos(materialIndex, v, invTargetOri.mult(vertOffsets.get(v)));
 
-                            Vector3f vPos = g.mesh.vertPos(materialIndex, v);
-                            g.mesh.vertPos(materialIndex, v, ori.mult(vPos));
+                            Vector3f vPos = g.mesh().vertPos(materialIndex, v);
+                            g.mesh().vertPos(materialIndex, v, ori.mult(vPos));
 
                         }
 

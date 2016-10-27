@@ -1,4 +1,4 @@
-package com.solarlune.bdxhelper;
+package com.solarlune.bdxhelper.utils;
 
 import java.util.ArrayList;
 
@@ -12,13 +12,13 @@ import com.nilunder.bdx.utils.Random;
 /**
  * Created by SolarLune on 1/9/2015.
  */
-public final class Math {
+public final class BDXHMath {
 
-    public static Vector3f snapVectToGrid(Vector3f vect, float snapTo){
+    public static Vector3f snapVectToGrid(Vector3f vect, float gridSpacesPerUnit){
 
-        vect.x = java.lang.Math.round(vect.x * snapTo) / snapTo;
-        vect.y = java.lang.Math.round(vect.y * snapTo) / snapTo;
-        vect.z = java.lang.Math.round(vect.z * snapTo) / snapTo;
+        vect.x = Math.round(vect.x * gridSpacesPerUnit) / gridSpacesPerUnit;
+        vect.y = Math.round(vect.y * gridSpacesPerUnit) / gridSpacesPerUnit;
+        vect.z = Math.round(vect.z * gridSpacesPerUnit) / gridSpacesPerUnit;
 
         return vect;
     }
@@ -60,30 +60,38 @@ public final class Math {
 
     }
 
+    public static float clamp(float value, float min, float max){
+        return Math.min(Math.max(value, min), max);
+    }
+
+    public static float clamp(float value, float maximums) {
+        return clamp(value, -maximums, maximums);
+    }
+
     public static Vector2f roundVector(Vector2f vec){
-        Vector2f out = new Vector2f(java.lang.Math.round(vec.x),
-                java.lang.Math.round(vec.y));
+        Vector2f out = new Vector2f(Math.round(vec.x),
+                Math.round(vec.y));
         return out;
     }
 
     public static Vector3f roundVector(Vector3f vec){
-        Vector3f out = new Vector3f(java.lang.Math.round(vec.x),
-                java.lang.Math.round(vec.y),
-                java.lang.Math.round(vec.z));
+        Vector3f out = new Vector3f(Math.round(vec.x),
+                Math.round(vec.y),
+                Math.round(vec.z));
         return out;
     }
 
     public static Vector4f roundVector(Vector4f vec){
-        Vector4f out = new Vector4f(java.lang.Math.round(vec.x),
-                java.lang.Math.round(vec.y),
-                java.lang.Math.round(vec.z),
-                java.lang.Math.round(vec.w));
+        Vector4f out = new Vector4f(Math.round(vec.x),
+                Math.round(vec.y),
+                Math.round(vec.z),
+                Math.round(vec.w));
         return out;
     }
 
     public static float oscillateSin(float oscRate, float oscRange, boolean baseOffset, float timeOffset){
 
-        float value = (float) java.lang.Math.sin((Bdx.time + timeOffset) * (java.lang.Math.PI * 2) * oscRate) * oscRange;
+        float value = (float) Math.sin((Bdx.time + timeOffset) * (Math.PI * 2) * oscRate) * oscRange;
 
         if (baseOffset) {
             value /= 2.0f;

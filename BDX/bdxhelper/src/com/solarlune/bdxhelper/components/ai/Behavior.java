@@ -9,14 +9,18 @@ import com.nilunder.bdx.State;
 
 public class Behavior extends State {
 
-	public GameObject g;
+    public GameObject g;
 
-	public Behavior(GameObject g){
-		this.g = g;
-	}
+    public Behavior(GameObject g){
+        this.g = g;
+    }
 
-	public boolean done(){
-		return true;
-	}
+    public boolean done(){
+        return true;
+    }
+
+    public String name(){
+        return this.getClass().getSimpleName();
+    }
 
 }

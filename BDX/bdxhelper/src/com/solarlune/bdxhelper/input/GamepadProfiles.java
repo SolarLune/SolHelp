@@ -1,7 +1,10 @@
 package com.solarlune.bdxhelper.input;
 
+import com.nilunder.bdx.inputs.Gamepad;
 import com.nilunder.bdx.inputs.Gamepad.Axis;
 import com.nilunder.bdx.inputs.Gamepad.Profile;
+
+import java.util.HashMap;
 
 public class GamepadProfiles {
 
@@ -23,7 +26,7 @@ public class GamepadProfiles {
             p.btnToCode.put("select", 9);
         }
         else {
-            p.axes.put("lx", new Axis(0));		// Linux is backwards compared to Windows by default
+            p.axes.put("lx", new Axis(0));		// Linux is different compared to Windows
             p.axes.put("ly", new Axis(1));
             p.btnToCode.put("start", 9);
             p.btnToCode.put("select", 8);

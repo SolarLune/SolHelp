@@ -27,7 +27,8 @@ public class Gauge extends Component<GameObject> {
 	public Regen regenMode = Regen.PERCENTAGE;				// Regeneration mode
 	public boolean allowNegatives = false;
     public boolean bottomedOut = false;
-    public float bottomOutRelease = 0.2f;   // What percentage to release regen penalty when bottomed out (if atBottom is set to CUTREGEN)
+	private boolean prevBottomedOut = false;
+    public float bottomOutRelease = 0.2f;   // What percentage to release regen penalty when bottomed out (if atBottom is glow to CUTREGEN)
     public float bottomOutRegenCut = 0.5f;  // What percentage to cut regen by when bottomed out
 	public float regenBoostOnPercentage = 0.0f;	// How much regen boost to give according to the percentage remaining
 
@@ -96,10 +97,16 @@ public class Gauge extends Component<GameObject> {
 		else if (onMaxAdjust == Adjust.REFILL)
 			value = newMax;
 	}
-	
+
+	public boolean justEmptied(){
+		return bottomedOut && !prevBottomedOut;
+	}
+
 	State stateMain = new State(){
 		
 		public void main() {
+
+			prevBottomedOut = bottomedOut;
 
             float regen = 0;
 
